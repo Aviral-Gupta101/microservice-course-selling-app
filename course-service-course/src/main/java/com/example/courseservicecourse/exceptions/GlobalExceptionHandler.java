@@ -1,16 +1,18 @@
-package com.example.courseserviceuser.exceptions;
+package com.example.courseservicecourse.exceptions;
 
-import com.example.courseserviceuser.exceptions.custom_exception.ApiException;
-import lombok.extern.slf4j.Slf4j;
+import com.example.courseservicecourse.exceptions.custom_exception.ApiException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Map;
 
-@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     // Global Exception
     @ExceptionHandler(Exception.class)

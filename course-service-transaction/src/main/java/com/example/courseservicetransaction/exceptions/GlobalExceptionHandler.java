@@ -1,6 +1,6 @@
-package com.example.courseserviceuser.exceptions;
+package com.example.courseservicetransaction.exceptions;
 
-import com.example.courseserviceuser.exceptions.custom_exception.ApiException;
+import com.example.courseservicetransaction.exceptions.custom_exception.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
