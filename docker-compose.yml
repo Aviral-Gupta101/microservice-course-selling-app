@@ -1,0 +1,154 @@
+services:
+      
+  auth-service:
+    build:
+      context: ./course-service-auth
+      dockerfile: Dockerfile
+    depends_on:
+      registry-service:
+        condition: service_started
+      mysql:
+        condition: service_healthy
+    container_name: course-service-auth
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/course
+      SPRING_APPLICATION_JSON: '{
+          "eureka": {
+            "client": {
+              "service-url": {
+                "defaultZone": "http://registry-service:8761/eureka/"
+              }
+            }
+          }
+        }'
+    networks:
+      - spring-network
+
+      
+  course-service:
+    build:
+      context: ./course-service-course
+      dockerfile: Dockerfile
+    depends_on:
+      registry-service:
+        condition: service_started
+      mysql:
+        condition: service_healthy
+    container_name: course-service-course
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/course
+      SPRING_APPLICATION_JSON: '{
+          "eureka": {
+            "client": {
+              "service-url": {
+                "defaultZone": "http://registry-service:8761/eureka/"
+              }
+            }
+          }
+        }'
+    networks:
+      - spring-network
+
+      
+  gateway-service:
+    build:
+      context: ./course-service-gateway
+      dockerfile: Dockerfile
+    container_name: course-service-gateway
+    environment:
+      SPRING_APPLICATION_JSON: '{
+          "eureka": {
+            "client": {
+              "service-url": {
+                "defaultZone": "http://registry-service:8761/eureka/"
+              }
+            }
+          }
+        }'
+    depends_on:
+      registry-service:
+        condition: service_started
+    ports:
+      - "8080:8080"
+    networks:
+      - spring-network
+
+
+  registry-service:
+    build:
+      context: ./course-service-registry
+      dockerfile: Dockerfile
+    container_name: course-service-registry
+    ports:
+      - "8761:8761"
+    networks:
+      - spring-network
+
+
+  transaction-service:
+    build:
+      context: ./course-service-transaction
+      dockerfile: Dockerfile
+    depends_on:
+      registry-service:
+        condition: service_started
+      mysql:
+        condition: service_healthy
+    container_name: course-service-transaction
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/course
+      SPRING_APPLICATION_JSON: '{
+          "eureka": {
+            "client": {
+              "service-url": {
+                "defaultZone": "http://registry-service:8761/eureka/"
+              }
+            }
+          }
+        }'
+    networks:
+      - spring-network
+
+  user-service:
+    build:
+      context: ./course-service-user
+      dockerfile: Dockerfile
+    depends_on:
+      registry-service:
+        condition: service_started
+      mysql:
+        condition: service_healthy
+    container_name: course-service-user
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/course
+      SPRING_APPLICATION_JSON: '{
+          "eureka": {
+            "client": {
+              "service-url": {
+                "defaultZone": "http://registry-service:8761/eureka/"
+              }
+            }
+          }
+        }'
+    networks:
+      - spring-network
+
+
+  mysql:
+    image: arm64v8/mysql:latest
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: toor
+      MYSQL_DATABASE: course
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - spring-network
+
+networks:
+  spring-network:
+    driver: bridge
