@@ -12,7 +12,7 @@ This project is a **Course Selling Application** built using **Spring Boot** and
 | `registry-service`    | Eureka server for service registration & discovery |
 | `course-service`      | Manages courses and their metadata               |
 | `user-service`        | Handles user registration, login, and profiles   |
-| `course-service`     | Manages course register new course/modify               |
+| `auth-service`     | Manages authentication of the user            |
 | `transaction-service`     | Simulates payment processing                     
 ---
 
